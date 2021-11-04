@@ -6,17 +6,18 @@ public class Knight : MonoBehaviour
 {
     private int chosenAttack; //1 = wide 2 = focused
     [SerializeField] private int health;
-    [SerializeField] private EnemyArray enemies;
+    [SerializeField] private Character enemies;
     [SerializeField] private int wideAttackDamage; //1. Wide attack, attacks all enemies. Less damage.
     [SerializeField] private int focusedAttackDamage; //2. Focused attack, attacks one enemy. More damage.
 
     private void Awake()
     {
-        enemies = GameObject.Find("EnemyParty").GetComponent<EnemyArray>();
+        enemies = GameObject.Find("EnemyParty").GetComponent<Character>();
     }
 
     private void Update()
     {
+        /*
         if (Input.GetMouseButtonDown(0)) //Left click. Wide attack.
         {
             chosenAttack = 1;
@@ -29,6 +30,7 @@ public class Knight : MonoBehaviour
             Attack(2);
             Debug.Log("Focused attack");
         }
+        */
     }
 
     private void Attack(int attack)
@@ -36,12 +38,13 @@ public class Knight : MonoBehaviour
         switch (chosenAttack)
         {
             case 1: //wide attack
-                for (int i = 0; i < enemies.GetLength(); i++)
+                for (int i = 0; i < enemies.GetEnemyLength(); i++)
                 {
-                    
+                    //Todo: Damage all enemies
                 }
                 break;
             case 2: //focused attack
+                //Todo: Pick enemy
                 break;
             
         }

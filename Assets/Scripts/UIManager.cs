@@ -11,8 +11,6 @@ public class AbilityEvent : UnityEvent<int>
 
 public class UIManager : MonoBehaviour
 {
-    //TODO: AI
-
     private string selector;
     private int selectedMenu, selectedUser, selectedText, selectedPlayer, selectedEnemy;
     private bool hasSelectedCharacter, isSelectingEnemy, isPlayerTurn;
@@ -54,11 +52,25 @@ public class UIManager : MonoBehaviour
     {
         if (isPlayerTurn)
         {
-            MoveArrow(0, true);
             //Shows which text/player is selected.
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                if (!hasSelectedCharacter)
+                if (isSelectingEnemy)
+                {
+                    selectedUser++;
+                    if (selectedUser > 1)
+                    {
+                        selectedUser = 0;
+                    }
+
+                    if (selectedUser < 0)
+                    {
+                        selectedUser = 1;
+                    }
+                    MoveArrow(selectedUser, false);
+                }
+
+                if (!hasSelectedCharacter && !isSelectingEnemy)
                 {
                     selectedUser++;
                     if (selectedUser > 1)
@@ -159,9 +171,14 @@ public class UIManager : MonoBehaviour
                     #endregion
                 }
 
+            }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
                 if (isSelectingEnemy)
                 {
-                    selectedUser++;
+                    selectedUser--;
+
                     if (selectedUser > 1)
                     {
                         selectedUser = 0;
@@ -173,10 +190,7 @@ public class UIManager : MonoBehaviour
                     }
                     MoveArrow(selectedUser, false);
                 }
-            }
 
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
                 if (!hasSelectedCharacter && !isSelectingEnemy)
                 {
                     selectedUser--;
@@ -276,24 +290,9 @@ public class UIManager : MonoBehaviour
                     }
                     #endregion
                 }
-
-                if (isSelectingEnemy)
-                {
-                    selectedUser--;
-                    if (selectedUser > 1)
-                    {
-                        selectedUser = 0;
-                    }
-
-                    if (selectedUser < 0)
-                    {
-                        selectedUser = 1;
-                    }
-                    MoveArrow(selectedUser, false);
-                }
             }
 
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return)) //Enter
             {
                 if (isSelectingEnemy)
                 {
@@ -301,11 +300,13 @@ public class UIManager : MonoBehaviour
                     {
                         if (selectedPlayer == 0) //Wizard
                         {
+                            menuArray[1].SetActive(false);
                             wizardAttack1.Invoke(selectedUser);
                         }
 
                         if (selectedPlayer == 1) //Knight
                         {
+                            menuArray[1].SetActive(false);
                             knightAttack1.Invoke(selectedUser);
                         }
                     }
@@ -314,84 +315,106 @@ public class UIManager : MonoBehaviour
                     {
                         if (selectedPlayer == 0) //Wizard
                         {
+                            menuArray[2].SetActive(false);
                             wizardHeal1.Invoke(selectedUser);
                         }
 
                         if (selectedPlayer == 1) //Knight
                         {
+                            menuArray[2].SetActive(false);
                             knightHeal1.Invoke(selectedUser);
                         }
                     }
                     isSelectingEnemy = false;
+                    hasSelectedCharacter = false;
                     isPlayerTurn = false;
                 }
 
                 if (hasSelectedCharacter && !isSelectingEnemy)
                 {
                     #region Attack menu 
-                if (selectedMenu == 1)
-                {
-                    if (selectedUser == 0)
+                    if (selectedMenu == 1)
                     {
-                        if (selectedText == 0) //attack, focused, wizard
+                        if (selectedUser == 0)
                         {
-                            selectedUser = 0;
-                            isSelectingEnemy = true;
+                            if (selectedText == 0) //attack, focused, wizard
+                            {
+                                selectedUser = 0;
+                                menuArray[1].SetActive(false);
+                                selectedText = 0;
+                                selectedMenu = 0;
+                                isSelectingEnemy = true;
+                            }
+
+                            if (selectedText == 1) //attack, wide, wizard
+                            {
+                                menuArray[1].SetActive(false);
+                                wizardAttack2.Invoke();
+                                isPlayerTurn = false;
+                            }
                         }
 
-                        if (selectedText == 1) //attack, wide, wizard
+                        if (selectedUser == 1)
                         {
-                            wizardAttack2.Invoke();
+                            if (selectedText == 0) //attack, focused, knight
+                            {
+                                selectedUser = 0;
+                                menuArray[1].SetActive(false);
+                                selectedText = 0;
+                                selectedMenu = 0;
+                                isSelectingEnemy = true;
+                            }
+
+                            if (selectedText == 1) //attack, wide, knight
+                            {
+                                menuArray[1].SetActive(false);
+                                knightAttack2.Invoke();
+                                isPlayerTurn = false;
+                            }
                         }
                     }
-
-                    if (selectedUser == 1)
-                    {
-                        if (selectedText == 0) //attack, focused, knight
-                        {
-                            selectedUser = 0;
-                            isSelectingEnemy = true;
-                        }
-
-                        if (selectedText == 1) //attack, wide, knight
-                        {
-                            knightAttack2.Invoke();
-                        }
-                    }
-                }
-                #endregion
+                    #endregion
                     #region Heal menu
                     if (selectedMenu == 2) //Heal
-                {
-                    if (selectedUser == 0) //heal, focused, wizard
                     {
-                        if (selectedText == 0) //heal, focused, wizard
+                        if (selectedUser == 0) //heal, focused, wizard
                         {
-                            selectedUser = 0;
-                            isSelectingEnemy = true;
+                            if (selectedText == 0) //heal, focused, wizard
+                            {
+                                selectedUser = 0;
+                                selectedText = 0;
+                                selectedMenu = 0;
+                                isSelectingEnemy = true;
+                            }
+
+                            if (selectedText == 1) //heal, wide, wizard
+                            {
+                                menuArray[2].SetActive(false);
+                                wizardHeal2.Invoke();
+                            }
                         }
 
-                        if (selectedText == 1) //heal, wide, wizard
+                        if (selectedUser == 1) //heal, wide, 
                         {
-                             wizardHeal2.Invoke();
+                            if (selectedText == 0) //heal, focused, knight
+                            {
+                                selectedUser = 0;
+                                selectedText = 0;
+                                selectedMenu = 0;
+                                isSelectingEnemy = true;
+                            }
+
+                            if (selectedText == 1) //heal, wide, knight
+                            {
+                                selectedUser = 0;
+                                selectedText = 0;
+                                selectedMenu = 0;
+                                menuArray[2].SetActive(false);
+                                knightHeal2.Invoke();
+                            }
                         }
                     }
-
-                    if (selectedUser == 1) //heal, wide, knight
-                    {
-                         if (selectedText == 0) //heal, focused, knight
-                         {
-                             selectedUser = 0;
-                             isSelectingEnemy = true;
-                         }
-
-                         if (selectedText == 1) //heal, wide, knight
-                         {
-                             knightHeal2.Invoke();
-                         }
-                    }
-                }
-                #endregion
+                    #endregion
                     #region Text handler
                     if (selectedText == 0 && selectedMenu < 1) //Attack menu opened
                 {
@@ -415,10 +438,10 @@ public class UIManager : MonoBehaviour
                 }
 
                 if (!hasSelectedCharacter)
-            {
-                selectedPlayer = selectedUser;
-                hasSelectedCharacter = true;
-            }
+                {
+                    selectedPlayer = selectedUser;
+                    hasSelectedCharacter = true;
+                }
 
             }
 
@@ -463,10 +486,16 @@ public class UIManager : MonoBehaviour
     {
         return isPlayerTurn;
     }
+
     public void SetPlayerTurnStatus(bool setTrue)
     {
         if (setTrue)
         {
+            MoveArrow(0, true);
+            selectedText = 0;
+            selectedMenu = 0;
+            selectedUser = 0;
+            hasSelectedCharacter = false;
             isPlayerTurn = true;
         }
 

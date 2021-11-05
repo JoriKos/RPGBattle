@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Knight : MonoBehaviour
 {
-    private int chosenAttack; //1 = wide 2 = focused
     [SerializeField] private int health;
-    [SerializeField] private Character enemies;
+    [SerializeField] private int healingAmount;
     [SerializeField] private int wideAttackDamage; //1. Wide attack, attacks all enemies. Less damage.
     [SerializeField] private int focusedAttackDamage; //2. Focused attack, attacks one enemy. More damage.
+    [SerializeField] private Character enemies;
 
     private void Awake()
     {
@@ -39,5 +39,20 @@ public class Knight : MonoBehaviour
     public int GetHealth()
     {
         return health;
+    }
+
+    public int GetHealingAmount()
+    {
+        return healingAmount;
+    }
+
+    public int GetFocusedDamage()
+    {
+        return focusedAttackDamage;
+    }
+
+    public int GetWideDamage()
+    {
+        return wideAttackDamage;
     }
 }

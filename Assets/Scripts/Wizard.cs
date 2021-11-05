@@ -6,7 +6,8 @@ public class Wizard : MonoBehaviour
 {
     [SerializeField] private int health;
     [SerializeField] private int healingAmount;
-    [SerializeField] private int spellDamage;
+    [SerializeField] private int wideSpellDamage;
+    [SerializeField] private int focusedSpellDamage;
     [SerializeField] private Character enemies;
 
     private void Awake()
@@ -39,4 +40,20 @@ public class Wizard : MonoBehaviour
     {
         return health;
     }
+
+    public int GetHealingAmount()
+    {
+        return healingAmount;
+    }
+
+    public int GetFocusedDamage()
+    {
+        return focusedSpellDamage;
+    }
+
+    public int GetWideDamage()
+    {
+        return wideSpellDamage;
+    }
+
 }

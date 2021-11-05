@@ -14,36 +14,28 @@ public class AI : MonoBehaviour
     private void Awake()
     {
         uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-        character = GameObject.Find("UIManager").GetComponent<Character>();
-        for (int i = 0; i < enemiesArray.Length; i++)
-        {
-            character.GetEnemyAtIndex(i).GetComponent<Enemy>();
-        }
+        character = GameObject.Find("UIManager").GetComponent<Character>(); 
     }
 
     private void Update()
     {
         if (!uiManager.GetPlayerTurnStatus())
         {
-            randomTarget = Random.Range(0, character.GetPlayerLength());
+            randomTarget = Random.Range(0, 2);
 
             if (randomTarget == 0)
             {
-                for (int i = 0; i < enemiesArray.Length; i++)
-                {
-                    wizard.SetHealth(enemiesArray[i].GetAttackDamage(), true);
-                }
+                wizard.SetHealth(enemiesArray[0].GetAttackDamage(), true);
+                wizard.SetHealth(enemiesArray[1].GetAttackDamage(), true);
+                uiManager.SetPlayerTurnStatus(true);
             }
 
-            if (randomTarget == 1)
+            if (randomTarget > 0)
             {
-                for (int i = 0; i < enemiesArray.Length; i++)
-                {
-                    knight.SetHealth(enemiesArray[i].GetAttackDamage(), true);
-                }
+                knight.SetHealth(enemiesArray[0].GetAttackDamage(), true);
+                knight.SetHealth(enemiesArray[1].GetAttackDamage(), true);
+                uiManager.SetPlayerTurnStatus(true);
             }
-
-            uiManager.SetPlayerTurnStatus(true);
         }
     }
 }

@@ -18,6 +18,19 @@ public class Enemy : MonoBehaviour
         return attackDamage;
     }
 
+    public void SetHealth(int value, bool subtract) //value = value to modify with, subtract = subtract or add to health
+    {
+        switch (subtract)
+        {
+            case true:
+                health -= value;
+                break;
+            case false:
+                health += value;
+                break;
+        }
+    }
+
     public int GetHealth()
     {
         return health;

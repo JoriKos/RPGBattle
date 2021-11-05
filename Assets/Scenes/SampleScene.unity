@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 51870416}
   - component: {fileID: 51870417}
+  - component: {fileID: 51870418}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Untagged
@@ -205,6 +206,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &51870418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51870415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cd9f098341a0434b8378e461f1c10cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attackDamage: 10
+  players: {fileID: 0}
 --- !u!1 &61356425
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +576,7 @@ GameObject:
   m_Component:
   - component: {fileID: 368864115}
   - component: {fileID: 368864116}
+  - component: {fileID: 368864117}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -632,6 +649,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &368864117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368864114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42e934d02cde0f4b8558a88cf9c7a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 120
+  enemies: {fileID: 0}
+  wideAttackDamage: 5
+  focusedAttackDamage: 10
 --- !u!1 &450645714
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,6 +675,7 @@ GameObject:
   m_Component:
   - component: {fileID: 450645715}
   - component: {fileID: 450645716}
+  - component: {fileID: 450645717}
   m_Layer: 0
   m_Name: Enemy0
   m_TagString: Untagged
@@ -714,6 +748,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &450645717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450645714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cd9f098341a0434b8378e461f1c10cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attackDamage: 10
+  players: {fileID: 0}
 --- !u!1 &494951643
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -893,7 +942,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8d7b7251a33444682003dd52da02a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heal:
+  wizardHeal1:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1432887088}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  wizardHeal2:
+    m_PersistentCalls:
+      m_Calls: []
+  wizardAttack1:
+    m_PersistentCalls:
+      m_Calls: []
+  wizardAttack2:
+    m_PersistentCalls:
+      m_Calls: []
+  knightHeal1:
+    m_PersistentCalls:
+      m_Calls: []
+  knightHeal2:
+    m_PersistentCalls:
+      m_Calls: []
+  knightAttack1:
+    m_PersistentCalls:
+      m_Calls: []
+  knightAttack2:
     m_PersistentCalls:
       m_Calls: []
   character: {fileID: 0}
@@ -974,7 +1056,7 @@ Transform:
   - {fileID: 1011980556}
   - {fileID: 368864115}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &770091400
 GameObject:
@@ -1414,13 +1496,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1011980554}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d42e934d02cde0f4b8558a88cf9c7a1b, type: 3}
+  m_Script: {fileID: 11500000, guid: de7f47913ff88714cbf26494d1301192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
+  health: 100
+  healingAmount: 10
+  spellDamage: 12
   enemies: {fileID: 0}
-  wideAttackDamage: 0
-  focusedAttackDamage: 0
 --- !u!1 &1218639508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,8 +1717,69 @@ Transform:
   m_LocalScale: {x: 0.3902, y: 0.3902, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1432887088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1432887090}
+  - component: {fileID: 1432887089}
+  - component: {fileID: 1432887091}
+  m_Layer: 0
+  m_Name: BattleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1432887089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432887088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfdc2853c1837b43aece3e36d94ec99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1432887090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432887088}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -29.893227, y: 0.84132206, z: -10.940937}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1432887091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432887088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2efa280d9bff0c4c8b8c1411f3f784d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiManager: {fileID: 0}
+  character: {fileID: 0}
+  wizard: {fileID: 1011980557}
+  knight: {fileID: 368864117}
+  enemiesArray: []
 --- !u!1 &1540080599
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,7 +2134,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1940341279}
-  - component: {fileID: 1940341280}
   m_Layer: 0
   m_Name: EnemyParty
   m_TagString: Untagged
@@ -2013,20 +2155,8 @@ Transform:
   - {fileID: 450645715}
   - {fileID: 51870416}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1940341280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940341278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88bba0b15fa3a1442b82ed8947940598, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1975946314
 GameObject:
   m_ObjectHideFlags: 0
@@ -2122,7 +2252,7 @@ RectTransform:
   - {fileID: 228549619}
   - {fileID: 1741980607}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

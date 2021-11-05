@@ -12,43 +12,15 @@ public class Knight : MonoBehaviour
 
     private void Awake()
     {
-        enemies = GameObject.Find("EnemyParty").GetComponent<Character>();
+        enemies = GameObject.Find("UIManager").GetComponent<Character>();
     }
 
     private void Update()
     {
-        /*
-        if (Input.GetMouseButtonDown(0)) //Left click. Wide attack.
+        if (health <= 0)
         {
-            chosenAttack = 1;
-            Attack(1);
-            Debug.Log("Wide attack");
+            this.gameObject.SetActive(false);
         }
-        if (Input.GetMouseButtonDown(1)) //Right click. Focused attack.
-        {
-            chosenAttack = 2;
-            Attack(2);
-            Debug.Log("Focused attack");
-        }
-        */
-    }
-
-    private void Attack(int attack)
-    {
-        switch (chosenAttack)
-        {
-            case 1: //wide attack
-                for (int i = 0; i < enemies.GetEnemyLength(); i++)
-                {
-                    //Todo: Damage all enemies
-                }
-                break;
-            case 2: //focused attack
-                //Todo: Pick enemy
-                break;
-            
-        }
-
     }
 
     public void SetHealth(int value, bool subtract) //value = value to modify with, subtract = subtract or add to health

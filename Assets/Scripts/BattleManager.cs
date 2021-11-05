@@ -4,9 +4,43 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    /* Todo:
-     * Turn-based system
-     * Save user inputs (Attack x with attack y, heal z)
-     * Indicate whose turn it is
-     */
+    public void WizardFocusedAttack()
+    {
+
+    }
+
+    public void WizardWideAttack()
+    {
+
+    }
+
+    public void WizardFocusedHeal()
+    {
+
+    }
+
+    public void WizardWidedHeal()
+    {
+
+    }
+
+    public void KnightFocusedAttack()
+    {
+
+    }
+
+    public void KnightWideAttack()
+    {
+
+    }
+
+    public void KnightFocusedHeal()
+    {
+
+    }
+
+    public void KnightWideHeal()
+    {
+
+    }
 }

@@ -4,19 +4,27 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine;
 
+[System.Serializable]
+public class AbilityEvent : UnityEvent<int>
+{
+}
+
 public class UIManager : MonoBehaviour
 {
-    //TODO: AI, select party member, unityevent heal/damage
+    //TODO: AI
 
     private string selector;
-    private int selectedText;
-    private int selectedMenu;
-    private int selectedUser;
-    private bool hasSelectedCharacter, hasSelectedEnemyCharacter;
-    [SerializeField] private UnityEvent wizardHeal;
-    [SerializeField] private UnityEvent wizardAttack;
-    [SerializeField] private UnityEvent knightHeal;
-    [SerializeField] private UnityEvent knightAttack;
+    private int selectedMenu, selectedUser, selectedText, selectedPlayer, selectedEnemy;
+    private bool hasSelectedCharacter, isSelectingEnemy, isPlayerTurn;
+    //Turn into arrays
+    [SerializeField] private AbilityEvent wizardHeal1; //focused
+    [SerializeField] private UnityEvent wizardHeal2; //wide
+    [SerializeField] private AbilityEvent wizardAttack1; //focused
+    [SerializeField] private UnityEvent wizardAttack2; //wide
+    [SerializeField] private AbilityEvent knightHeal1; //focused
+    [SerializeField] private UnityEvent knightHeal2; //wide
+    [SerializeField] private AbilityEvent knightAttack1; //focused
+    [SerializeField] private UnityEvent knightAttack2; //wide
     [SerializeField] private Character character;
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject[] menuArray; //0 = options, 1 = attack, 2 = healing
@@ -36,240 +44,366 @@ public class UIManager : MonoBehaviour
         {
             menuArray[i].SetActive(false);
         }
-        hasSelectedCharacter = false;
 
-        MoveArrow(0);
+        hasSelectedCharacter = false;
+        isPlayerTurn = true;
+        MoveArrow(0, true);
     }
 
     private void Update()
     {
-        //Shows which text is selected. I'm very proud of this code.
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (isPlayerTurn)
         {
-            if (!hasSelectedCharacter)
+            MoveArrow(0, true);
+            //Shows which text/player is selected.
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                selectedUser++;
-                if (selectedUser > 1)
+                if (!hasSelectedCharacter)
                 {
-                    selectedUser = 0;
+                    selectedUser++;
+                    if (selectedUser > 1)
+                    {
+                        selectedUser = 0;
+                    }
+
+                    if (selectedUser < 0)
+                    {
+                        selectedUser = 1;
+                    }
+                    MoveArrow(selectedUser, true);
                 }
 
-                if (selectedUser < 0)
+                if (hasSelectedCharacter && !isSelectingEnemy)
                 {
-                    selectedUser = 1;
+                    selectedText++;
+                    #region Options menu
+                    if (selectedMenu == 0)
+                    {
+                        if (selectedText > 2)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if (selectedText < 0)
+                        {
+                            selectedText = 2;
+                        }
+
+                        OptionsMenuText[selectedText].text = selector + OptionsMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText - 1 == -1)
+                        {
+                            OptionsMenuText[selectedText + 2].text = OptionsMenuText[selectedText + 2].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            OptionsMenuText[selectedText - 1].text = OptionsMenuText[selectedText - 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
+
+                    #region Attack menu
+                    if (selectedMenu == 1)
+                    {
+                        if (selectedText > 1)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if (selectedText < 0)
+                        {
+                            selectedText = 1;
+                        }
+
+                        AttackMenuText[selectedText].text = selector + AttackMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText - 1 == -1)
+                        {
+                            AttackMenuText[selectedText + 1].text = AttackMenuText[selectedText + 1].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            AttackMenuText[selectedText - 1].text = AttackMenuText[selectedText - 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
+
+                    #region Heal menu
+                    if (selectedMenu == 2)
+                    {
+
+                        if (selectedText > 1)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if (selectedText < 0)
+                        {
+                            selectedText = 1;
+                        }
+
+                        HealingMenuText[selectedText].text = selector + HealingMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText - 1 == -1)
+                        {
+                            HealingMenuText[selectedText + 1].text = HealingMenuText[selectedText + 1].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            HealingMenuText[selectedText - 1].text = HealingMenuText[selectedText - 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
                 }
-                MoveArrow(selectedUser);
+
+                if (isSelectingEnemy)
+                {
+                    selectedUser++;
+                    if (selectedUser > 1)
+                    {
+                        selectedUser = 0;
+                    }
+
+                    if (selectedUser < 0)
+                    {
+                        selectedUser = 1;
+                    }
+                    MoveArrow(selectedUser, false);
+                }
             }
 
-            if (hasSelectedCharacter && !hasSelectedEnemyCharacter)
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                selectedText++;
-                #region Options menu
-                if (selectedMenu == 0)
+                if (!hasSelectedCharacter && !isSelectingEnemy)
                 {
-                    if (selectedText > 2)
+                    selectedUser--;
+                    if (selectedUser > 1)
                     {
-                        selectedText = 0;
+                        selectedUser = 0;
                     }
 
-                    if (selectedText < 0)
+                    if (selectedUser < 0)
                     {
-                        selectedText = 2;
+                        selectedUser = 1;
                     }
-
-                    OptionsMenuText[selectedText].text = selector + OptionsMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText - 1 == -1)
-                    {
-                        OptionsMenuText[selectedText + 2].text = OptionsMenuText[selectedText + 2].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        OptionsMenuText[selectedText - 1].text = OptionsMenuText[selectedText - 1].text.Remove(0, 2);
-                    }
+                    MoveArrow(selectedUser, true);
                 }
-                #endregion
 
-                #region Attack menu
+                if (hasSelectedCharacter && !isSelectingEnemy)
+                {
+                    selectedText--;
+                    #region Options menu
+                    if (selectedMenu == 0)
+                    {
+                        if (selectedText > 2)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if (selectedText < 0)
+                        {
+                            selectedText = 2;
+                        }
+
+                        OptionsMenuText[selectedText].text = selector + OptionsMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText + 1 == 3)
+                        {
+                            OptionsMenuText[selectedText - 2].text = OptionsMenuText[selectedText - 2].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            OptionsMenuText[selectedText + 1].text = OptionsMenuText[selectedText + 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
+
+                    #region Attack menu
+                    if (selectedMenu == 1)
+                    {
+                        if (selectedText > 1)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if (selectedText < 0)
+                        {
+                            selectedText = 1;
+                        }
+
+                        AttackMenuText[selectedText].text = selector + AttackMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText + 1 == 2)
+                        {
+                            AttackMenuText[selectedText - 1].text = AttackMenuText[selectedText - 1].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            AttackMenuText[selectedText + 1].text = AttackMenuText[selectedText + 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
+
+                    #region Heal menu
+                    if (selectedMenu == 2)
+                    {
+                        if (selectedText > 1)
+                        {
+                            selectedText = 0;
+                        }
+
+                        if  (selectedText < 0)
+                        {
+                            selectedText = 1;
+                        }
+
+                        HealingMenuText[selectedText].text = selector + HealingMenuText[selectedText].text; //Adds "> " to newly-selected menu text
+
+                        //Removes previously selected menu text's selection indicator
+                        if (selectedText + 1 == 2)
+                        {
+                            HealingMenuText[selectedText - 1].text = HealingMenuText[selectedText - 1].text.Remove(0, 2);
+                        }
+                        else
+                        {
+                            HealingMenuText[selectedText + 1].text = HealingMenuText[selectedText + 1].text.Remove(0, 2);
+                        }
+                    }
+                    #endregion
+                }
+
+                if (isSelectingEnemy)
+                {
+                    selectedUser--;
+                    if (selectedUser > 1)
+                    {
+                        selectedUser = 0;
+                    }
+
+                    if (selectedUser < 0)
+                    {
+                        selectedUser = 1;
+                    }
+                    MoveArrow(selectedUser, false);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (isSelectingEnemy)
+                {
+                    if (selectedMenu == 1 && selectedText == 0)
+                    {
+                        if (selectedPlayer == 0) //Wizard
+                        {
+                            wizardAttack1.Invoke(selectedUser);
+                        }
+
+                        if (selectedPlayer == 1) //Knight
+                        {
+                            knightAttack1.Invoke(selectedUser);
+                        }
+                    }
+
+                    if (selectedMenu == 2 && selectedText == 0)
+                    {
+                        if (selectedPlayer == 0) //Wizard
+                        {
+                            wizardHeal1.Invoke(selectedUser);
+                        }
+
+                        if (selectedPlayer == 1) //Knight
+                        {
+                            knightHeal1.Invoke(selectedUser);
+                        }
+                    }
+                    isSelectingEnemy = false;
+                    isPlayerTurn = false;
+                }
+
+                if (hasSelectedCharacter && !isSelectingEnemy)
+                {
+                    #region Attack menu 
                 if (selectedMenu == 1)
                 {
-                    if (selectedText > 1)
+                    if (selectedUser == 0)
                     {
-                        selectedText = 0;
+                        if (selectedText == 0) //attack, focused, wizard
+                        {
+                            selectedUser = 0;
+                            isSelectingEnemy = true;
+                        }
+
+                        if (selectedText == 1) //attack, wide, wizard
+                        {
+                            wizardAttack2.Invoke();
+                        }
                     }
 
-                    if (selectedText < 0)
+                    if (selectedUser == 1)
                     {
-                        selectedText = 1;
-                    }
+                        if (selectedText == 0) //attack, focused, knight
+                        {
+                            selectedUser = 0;
+                            isSelectingEnemy = true;
+                        }
 
-                    AttackMenuText[selectedText].text = selector + AttackMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText - 1 == -1)
-                    {
-                        AttackMenuText[selectedText + 1].text = AttackMenuText[selectedText + 1].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        AttackMenuText[selectedText - 1].text = AttackMenuText[selectedText - 1].text.Remove(0, 2);
-                    }
-                }
-                #endregion
-
-                #region Heal menu
-                if (selectedMenu == 2)
-                {
-
-                    if (selectedText > 1)
-                    {
-                        selectedText = 0;
-                    }
-
-                    if (selectedText < 0)
-                    {
-                        selectedText = 1;
-                    }
-
-                    HealingMenuText[selectedText].text = selector + HealingMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText - 1 == -1)
-                    {
-                        HealingMenuText[selectedText + 1].text = HealingMenuText[selectedText + 1].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        HealingMenuText[selectedText - 1].text = HealingMenuText[selectedText - 1].text.Remove(0, 2);
+                        if (selectedText == 1) //attack, wide, knight
+                        {
+                            knightAttack2.Invoke();
+                        }
                     }
                 }
                 #endregion
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (!hasSelectedCharacter)
-            {
-                selectedUser--;
-                if (selectedUser > 1)
+                    #region Heal menu
+                    if (selectedMenu == 2) //Heal
                 {
-                    selectedUser = 0;
-                }
-
-                if (selectedUser < 0)
-                {
-                    selectedUser = 1;
-                }
-                MoveArrow(selectedUser);
-            }
-
-            if (hasSelectedCharacter)
-            {
-                selectedText--;
-                #region Options menu
-                if (selectedMenu == 0)
-                {
-                    if (selectedText > 2)
+                    if (selectedUser == 0) //heal, focused, wizard
                     {
-                        selectedText = 0;
+                        if (selectedText == 0) //heal, focused, wizard
+                        {
+                            selectedUser = 0;
+                            isSelectingEnemy = true;
+                        }
+
+                        if (selectedText == 1) //heal, wide, wizard
+                        {
+                             wizardHeal2.Invoke();
+                        }
                     }
 
-                    if (selectedText < 0)
+                    if (selectedUser == 1) //heal, wide, knight
                     {
-                        selectedText = 2;
-                    }
+                         if (selectedText == 0) //heal, focused, knight
+                         {
+                             selectedUser = 0;
+                             isSelectingEnemy = true;
+                         }
 
-                    OptionsMenuText[selectedText].text = selector + OptionsMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText + 1 == 3)
-                    {
-                        OptionsMenuText[selectedText - 2].text = OptionsMenuText[selectedText - 2].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        OptionsMenuText[selectedText + 1].text = OptionsMenuText[selectedText + 1].text.Remove(0, 2);
+                         if (selectedText == 1) //heal, wide, knight
+                         {
+                             knightHeal2.Invoke();
+                         }
                     }
                 }
                 #endregion
-
-                #region Attack menu
-                if (selectedMenu == 1)
-                {
-                    if (selectedText > 1)
-                    {
-                        selectedText = 0;
-                    }
-
-                    if (selectedText < 0)
-                    {
-                        selectedText = 1;
-                    }
-
-                    AttackMenuText[selectedText].text = selector + AttackMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText + 1 == 2)
-                    {
-                        AttackMenuText[selectedText - 1].text = AttackMenuText[selectedText - 1].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        AttackMenuText[selectedText + 1].text = AttackMenuText[selectedText + 1].text.Remove(0, 2);
-                    }
-                }
-                #endregion
-
-                #region Heal menu
-                if (selectedMenu == 2)
-                {
-                    if (selectedText > 1)
-                    {
-                        selectedText = 0;
-                    }
-
-                    if (selectedText < 0)
-                    {
-                        selectedText = 1;
-                    }
-
-                    HealingMenuText[selectedText].text = selector + HealingMenuText[selectedText].text; //Adds "> " to newly-selected menu text
-
-                    //Removes previously selected menu text's selection indicator
-                    if (selectedText + 1 == 2)
-                    {
-                        HealingMenuText[selectedText - 1].text = HealingMenuText[selectedText - 1].text.Remove(0, 2);
-                    }
-                    else
-                    {
-                        HealingMenuText[selectedText + 1].text = HealingMenuText[selectedText + 1].text.Remove(0, 2);
-                    }
-                }
-                #endregion
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (!hasSelectedCharacter)
-            {
-                hasSelectedCharacter = true;
-            }
-
-            if (hasSelectedCharacter)
-            {
-                if (selectedText == 0 && selectedMenu < 1) //Attack
+                    #region Text handler
+                    if (selectedText == 0 && selectedMenu < 1) //Attack menu opened
                 {
                     selectedText = 0;
                     menuArray[1].SetActive(true);
                     selectedMenu = 1;
                     AttackMenuText[0].text = selector + "Focused attack";
                     AttackMenuText[1].text = "Wide attack";
+
                 }
 
-                if (selectedText == 1 && selectedMenu < 1) //Heal
+                if (selectedText == 1 && selectedMenu < 1) //Heal menu opened
                 {
                     selectedText = 0;
                     menuArray[2].SetActive(true);
@@ -277,47 +411,68 @@ public class UIManager : MonoBehaviour
                     HealingMenuText[0].text = selector + "Focused heal";
                     HealingMenuText[1].text = "Wide heal";
                 }
-
-                if (selectedMenu == 1)
-                {
-                    if (selectedText == 0) //attack, 
-                    {
-
-                    }
+                    #endregion
                 }
 
-                if (selectedMenu == 2)
-                {
-
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            if (hasSelectedCharacter)
+                if (!hasSelectedCharacter)
             {
-                if (selectedMenu > 0)
-                {
-                    if (selectedMenu == 1)
-                    {
-                        menuArray[1].SetActive(false);
-                        selectedMenu = 0;
-                        selectedText = 0;
-                    }
+                selectedPlayer = selectedUser;
+                hasSelectedCharacter = true;
+            }
 
-                    if (selectedMenu == 2)
+            }
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (hasSelectedCharacter)
+                {
+                    if (selectedMenu > 0)
                     {
-                        menuArray[2].SetActive(false);
-                        selectedMenu = 0;
-                        selectedText = 1;
+                        if (selectedMenu == 1)
+                        {
+                            menuArray[1].SetActive(false);
+                            selectedMenu = 0;
+                            selectedText = 0;
+                        }
+
+                        if (selectedMenu == 2)
+                        {
+                            menuArray[2].SetActive(false);
+                            selectedMenu = 0;
+                            selectedText = 1;
+                        }
                     }
                 }
             }
         }
     }
-    private void MoveArrow(int index)
+    
+    private void MoveArrow(int index, bool isPlayer)
     {
-        arrow.transform.position = new Vector3(character.GetPlayerAtIndex(index).transform.position.x, character.GetPlayerAtIndex(index).transform.position.y + 1, character.GetPlayerAtIndex(index).transform.position.z);
+        if (isPlayer)
+        {
+            arrow.transform.position = new Vector3(character.GetPlayerAtIndex(index).transform.position.x, character.GetPlayerAtIndex(index).transform.position.y + 1, character.GetPlayerAtIndex(index).transform.position.z);
+        }
+        if (!isPlayer)
+        {
+            arrow.transform.position = new Vector3(character.GetEnemyAtIndex(index).transform.position.x, character.GetEnemyAtIndex(index).transform.position.y + 1, character.GetEnemyAtIndex(index).transform.position.z);
+        }
+    }
+
+    public bool GetPlayerTurnStatus()
+    {
+        return isPlayerTurn;
+    }
+    public void SetPlayerTurnStatus(bool setTrue)
+    {
+        if (setTrue)
+        {
+            isPlayerTurn = true;
+        }
+
+        if (!setTrue)
+        {
+            isPlayerTurn = false;
+        }
     }
 }
